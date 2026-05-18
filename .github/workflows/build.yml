@@ -23,6 +23,7 @@ jobs:
         with:
           ruby-version: '3.1'
           bundler-cache: true
+          working-directory: docs
 
       - name: Install Jekyll
         run: |
@@ -32,7 +33,9 @@ jobs:
         run: gem install jekyll minima
       
       - name: Build site
-        run: bundle exec jekyll build -s docs -d _site
+        run: |
+          bundle exec jekyll build -s . -d ../_site
+        working-directory: docs
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
