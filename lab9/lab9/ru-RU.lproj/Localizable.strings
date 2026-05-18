@@ -1,0 +1,15 @@
+"login_placeholder" = "Логин";
+"password_placeholder" = "Пароль";
+"login_button" = "Войти";
+"welcome_text" = "Добро пожаловать!";
+"menu_accounts" = "Мои счета";
+"menu_branches" = "Филиалы отделений";
+"menu_currency" = "Курсы валют";
+"account_number" = "Номер счета:";
+"account_type" = "Тип счета:";
+"account_balance" = "Баланс:";
+"nearest_branch" = "Ближайшее отделение";
+"currency_title" = "Валюта";
+"currency_buy" = "Покупка";
+"currency_sell" = "Продажа";
+"account_type_savings" = "Сберегательный";

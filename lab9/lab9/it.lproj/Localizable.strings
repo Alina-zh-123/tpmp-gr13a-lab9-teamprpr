@@ -1,0 +1,15 @@
+"login_placeholder" = "Accesso";
+"password_placeholder" = "Password";
+"login_button" = "Accedi";
+"welcome_text" = "Benvenuto!";
+"menu_accounts" = "I Miei Conti";
+"menu_branches" = "Filiali e Succursali";
+"menu_currency" = "Tassi di Cambio";
+"account_number" = "Numero di conto:";
+"account_type" = "Tipo di conto:";
+"account_balance" = "Saldo:";
+"nearest_branch" = "Filiale più vicina";
+"currency_title" = "Valuta";
+"currency_buy" = "Acquisto";
+"currency_sell" = "Vendita";
+"account_type_savings" = "Risparmio";

@@ -1,0 +1,15 @@
+"login_placeholder" = "Login";
+"password_placeholder" = "Password";
+"login_button" = "Sign In";
+"welcome_text" = "Welcome!";
+"menu_accounts" = "My Accounts";
+"menu_branches" = "Branches";
+"menu_currency" = "Currency Rates";
+"account_number" = "Account number:";
+"account_type" = "Account type:";
+"account_balance" = "Balance:";
+"nearest_branch" = "Nearest branch";
+"currency_title" = "Currency";
+"currency_buy" = "Buy";
+"currency_sell" = "Sell";
+"account_type_savings" = "Savings";
