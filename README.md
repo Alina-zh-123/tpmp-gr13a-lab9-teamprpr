@@ -28,7 +28,7 @@
     * **Филиалы отделений:** открытие карты со всеми доступными филиалами и автоматическим поиском ближайшей точки по отношению к геолокации клиента.
     * **Курсы валют:** таблица актуальных курсов покупки/продажи популярных валют (USD, EUR, RUB, CNY).
       
-<img width="321" height="644" alt="Снимок экрана 2026-05-18 в 7 55 09 PM" src="https://github.com/user-attachments/assets/a676714c-0380-4892-8015-7d9a4089d20f" /><img width="323" height="645" alt="Снимок экрана 2026-05-18 в 7 55 47 PM" src="https://github.com/user-attachments/assets/88690f70-5364-4616-9d85-b448bd370668" /><img width="322" height="649" alt="Снимок экрана 2026-05-18 в 7 55 34 PM" src="https://github.com/user-attachments/assets/752ac407-cabf-4df7-8e8d-cf372a3bf308" />
+<img width="1304" height="867" alt="image" src="https://github.com/user-attachments/assets/6c4ad89f-89db-49d6-ac64-0a7b1eb04bd3" />
 
 
 3. **Локализация:** Для проверки мультиязычности измените язык системы в настройках симулятора (`iOS Settings` -> `General` -> `Language & Region`) на английский или итальянский. Интерфейс приложения и предзагруженные данные из CoreData адаптируются автоматически.
