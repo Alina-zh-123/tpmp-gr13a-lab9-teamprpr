@@ -17,5 +17,5 @@
 
 ### Диаграммы Use case и текстовые сценарии
 
-* [Use Case: «Просмотр филиалов и поиск ближайшего»](pages/useBranch.md)
-* [Use Case: «Авторизация»](pages/useAuth.md)
+* [Use Case: «Просмотр филиалов и поиск ближайшего»](useBranch.md)
+* [Use Case: «Авторизация»](useAuth.md)
