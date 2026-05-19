@@ -39,6 +39,12 @@ jobs:
           xcodebuild -version
           xcrun simctl list devices
 
+      # Шаг 3.5: Предварительный запуск симулятора (избегает зависания UI-тестов)
+      - name: Boot Simulator
+        run: |
+          xcrun simctl boot "${{ env.SIMULATOR_NAME }}" || true
+          xcrun simctl bootstatus "${{ env.SIMULATOR_NAME }}" -boot || true
+
       # Шаг 4: Запуск Unit тестов
       - name: Run Unit Tests
         run: |
