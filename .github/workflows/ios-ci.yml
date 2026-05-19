@@ -45,7 +45,7 @@ jobs:
           xcodebuild test \
             -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
             -scheme ${{ env.SCHEME_NAME }} \
-            -destination 'generic/platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
+            -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
             -enableCodeCoverage YES \
             CODE_SIGN_IDENTITY="" \
@@ -58,7 +58,7 @@ jobs:
           xcodebuild test \
             -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
             -scheme ${{ env.SCHEME_NAME }} \
-            -destination 'generic/platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
+            -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
             -only-testing: lab9UITests \
             CODE_SIGN_IDENTITY="" \
