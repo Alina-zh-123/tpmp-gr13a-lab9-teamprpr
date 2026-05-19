@@ -24,6 +24,10 @@ jobs:
           bundler-cache: true
           working-directory: docs 
 
+      - name: Install dependencies
+        run: bundle install
+        working-directory: docs
+
       - name: Build site
         run: bundle exec jekyll build -s . -d ../_site
         working-directory: docs
