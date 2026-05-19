@@ -18,6 +18,7 @@ jobs:
   build-and-test:
     # Виртуальная машина: macOS с последней версией
     runs-on: macos-latest
+    timeout-minutes: 20
     
     steps:
       # Шаг 1: Checkout репозитория
@@ -39,11 +40,18 @@ jobs:
           xcodebuild -version
           xcrun simctl list devices
 
+      # Шаг 3.2: Динамический выбор симулятора
+      - name: Select iOS Simulator
+        run: |
+          SIMULATOR=$(xcrun simctl list devices | grep -E "iPhone" | grep -v "unavailable" | head -n 1 | sed -E 's/^[[:space:]]*//; s/[[:space:]]*\(.*//')
+          echo "Selected simulator: $SIMULATOR"
+          echo "SIMULATOR_NAME=$SIMULATOR" >> $GITHUB_ENV
+
       # Шаг 3.5: Предварительный запуск симулятора (избегает зависания UI-тестов)
       - name: Boot Simulator
         run: |
           xcrun simctl boot "${{ env.SIMULATOR_NAME }}" || true
-          xcrun simctl bootstatus "${{ env.SIMULATOR_NAME }}" -boot || true
+          sleep 15
 
       # Шаг 4: Запуск Unit тестов
       - name: Run Unit Tests
@@ -53,6 +61,7 @@ jobs:
             -scheme ${{ env.SCHEME_NAME }} \
             -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
+            -only-testing:lab9Tests \
             -enableCodeCoverage YES
         continue-on-error: false
 
@@ -64,7 +73,7 @@ jobs:
             -scheme ${{ env.SCHEME_NAME }} \
             -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
-            -only-testing: lab9UITests
+            -only-testing:lab9UITests
         continue-on-error: true
 
       # Шаг 6: Финальная сборка (Build) — выполняется только при успешных тестах
