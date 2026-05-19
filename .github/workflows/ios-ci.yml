@@ -53,9 +53,7 @@ jobs:
             -scheme ${{ env.SCHEME_NAME }} \
             -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
-            -enableCodeCoverage YES \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
+            -enableCodeCoverage YES
         continue-on-error: false
 
       # Шаг 5: Запуск UI тестов
@@ -66,9 +64,7 @@ jobs:
             -scheme ${{ env.SCHEME_NAME }} \
             -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
-            -only-testing: lab9UITests \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
+            -only-testing: lab9UITests
         continue-on-error: true
 
       # Шаг 6: Финальная сборка (Build) — выполняется только при успешных тестах
