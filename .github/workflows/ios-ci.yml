@@ -11,7 +11,7 @@ on:
 env:
   PROJECT_NAME: lab9
   SCHEME_NAME: lab9
-  SIMULATOR_NAME: iPhone 17
+  SIMULATOR_NAME: iPhone 16
 
 jobs:
   # Основная работа CI/CD

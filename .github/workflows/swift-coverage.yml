@@ -21,7 +21,7 @@ jobs:
           xcodebuild test \
             -project lab9/lab9.xcodeproj \
             -scheme lab9 \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
             clean test
