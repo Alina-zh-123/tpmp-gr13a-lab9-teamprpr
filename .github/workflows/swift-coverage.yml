@@ -1,0 +1,70 @@
+name: Swift Test Coverage CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  run-tests-and-coverage:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+
+      - name: Run Unit & UI Tests
+        run: |
+          xcodebuild test \
+            -project lab9/lab9.xcodeproj \
+            -scheme lab9 \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults.xcresult \
+            clean test
+
+      - name: Extract Dynamic Coverage Report
+        id: parse_coverage
+        run: |
+          # Generate JSON report from .xcresult using xccov
+          xcrun xccov view --report --json TestResults.xcresult > coverage_report.json
+          
+          # Extract top-level line coverage float (e.g. 0.9412)
+          COVERAGE_FLOAT=$(jq -r '.lineCoverage' coverage_report.json)
+          
+          # Convert to percentage
+          COVERAGE_PERCENT=$(awk -v cov="$COVERAGE_FLOAT" 'BEGIN {print cov * 100}')
+          COVERAGE_ROUNDED=$(awk -v cov="$COVERAGE_PERCENT" 'BEGIN {printf "%.1f", cov}')
+          
+          # Print dynamic percentage to console
+          echo "==========================================="
+          echo "DYNAMIC TOTAL CODE COVERAGE: $COVERAGE_ROUNDED%"
+          echo "==========================================="
+          
+          # Set variables for GitHub Actions environment
+          echo "COVERAGE_VAL=$COVERAGE_ROUNDED" >> $GITHUB_ENV
+          
+          # Dynamically determine shields.io badge color
+          COVERAGE_COLOR=$(awk -v cov="$COVERAGE_PERCENT" 'BEGIN {
+            if (cov >= 90.0) print "brightgreen";
+            else if (cov >= 80.0) print "green";
+            else if (cov >= 60.0) print "yellow";
+            else print "red";
+          }')
+          echo "COVERAGE_COLOR=$COVERAGE_COLOR" >> $GITHUB_ENV
+
+      - name: Create or Update Dynamic Coverage Badge
+        uses: Schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ secrets.GIST_ID }}
+          filename: coverage.json
+          label: coverage
+          message: ${{ env.COVERAGE_VAL }}%
+          color: ${{ env.COVERAGE_COLOR }}
