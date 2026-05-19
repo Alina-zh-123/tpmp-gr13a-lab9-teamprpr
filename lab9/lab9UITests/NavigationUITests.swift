@@ -35,7 +35,7 @@ final class NavigationUITests: XCTestCase {
         // Check transition to Accounts List View
         // The screen has details for Savings account with balance 1 234 567 BYN
         let accountNumberLabel = app.staticTexts["Account number:"]
-        XCTAssertTrue(accountNumberLabel.exists)
+        XCTAssertTrue(accountNumberLabel.waitForExistence(timeout: 5))
         
         let accountValueLabel = app.staticTexts["25276191767"]
         XCTAssertTrue(accountValueLabel.exists)
@@ -53,7 +53,7 @@ final class NavigationUITests: XCTestCase {
         }
         
         // Verify we are back on Main Menu
-        XCTAssertTrue(app.staticTexts["Welcome!"].exists)
+        XCTAssertTrue(app.staticTexts["Welcome!"].waitForExistence(timeout: 5))
     }
     
     func testNavigateToBranchesAndBack() {
@@ -63,7 +63,7 @@ final class NavigationUITests: XCTestCase {
         
         // Map will display the nearest branch info at the bottom
         let nearestBranchLabel = app.staticTexts["Nearest branch"]
-        XCTAssertTrue(nearestBranchLabel.exists)
+        XCTAssertTrue(nearestBranchLabel.waitForExistence(timeout: 5))
         
         // Back button on Map is inside a circular blue overlay
         let backButton = app.buttons.images["chevron.left"]
@@ -74,7 +74,7 @@ final class NavigationUITests: XCTestCase {
         }
         
         // Verify we are back on Main Menu
-        XCTAssertTrue(app.staticTexts["Welcome!"].exists)
+        XCTAssertTrue(app.staticTexts["Welcome!"].waitForExistence(timeout: 5))
     }
     
     func testNavigateToCurrencyAndBack() {
@@ -83,7 +83,8 @@ final class NavigationUITests: XCTestCase {
         currencyButton.tap()
         
         // Check grid titles
-        XCTAssertTrue(app.staticTexts["Currency"].exists)
+        let currencyLabel = app.staticTexts["Currency"]
+        XCTAssertTrue(currencyLabel.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Buy"].exists)
         XCTAssertTrue(app.staticTexts["Sell"].exists)
         
@@ -100,6 +101,6 @@ final class NavigationUITests: XCTestCase {
         }
         
         // Verify we are back on Main Menu
-        XCTAssertTrue(app.staticTexts["Welcome!"].exists)
+        XCTAssertTrue(app.staticTexts["Welcome!"].waitForExistence(timeout: 5))
     }
 }

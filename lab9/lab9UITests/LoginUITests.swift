@@ -62,7 +62,7 @@ final class LoginUITests: XCTestCase {
         
         // Validate transition to Main Menu
         let welcomeText = app.staticTexts["Welcome!"]
-        XCTAssertTrue(welcomeText.exists)
+        XCTAssertTrue(welcomeText.waitForExistence(timeout: 5))
         
         let myAccountsButton = app.buttons["My Accounts"]
         XCTAssertTrue(myAccountsButton.exists)
