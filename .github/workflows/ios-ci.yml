@@ -1,0 +1,107 @@
+name: iOS CI/CD Pipeline
+
+# Триггеры: запуск при создании Pull Request в ветки development и production
+on:
+  pull_request:
+    branches:
+      - development
+      - production
+
+# Определение переменных окружения для всего пайплайна
+env:
+  PROJECT_NAME: lab9
+  SCHEME_NAME: lab9
+  SIMULATOR_NAME: iPhone 15
+
+jobs:
+  # Основная работа CI/CD
+  build-and-test:
+    # Виртуальная машина: macOS с последней версией
+    runs-on: macos-latest
+    
+    steps:
+      # Шаг 1: Checkout репозитория
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Шаг 2: Установка зависимостей (если используется CocoaPods)
+      - name: Setup CocoaPods Dependencies
+        run: |
+          if [ -f "Podfile" ]; then
+            pod install
+          fi
+
+      # Шаг 3: Вывод информации об окружении
+      - name: Display System Information
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices
+
+      # Шаг 4: Запуск Unit тестов
+      - name: Run Unit Tests
+        run: |
+          xcodebuild test \
+            -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
+            -scheme ${{ env.SCHEME_NAME }} \
+            -destination 'generic/platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
+            -configuration Debug \
+            -enableCodeCoverage YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+        continue-on-error: false
+
+      # Шаг 5: Запуск UI тестов
+      - name: Run UI Tests
+        run: |
+          xcodebuild test \
+            -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
+            -scheme ${{ env.SCHEME_NAME }} \
+            -destination 'generic/platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
+            -configuration Debug \
+            -only-testing: lab9UITests \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+        continue-on-error: true
+
+      # Шаг 6: Финальная сборка (Build) — выполняется только при успешных тестах
+      - name: Build Application
+        if: success()
+        run: |
+          xcodebuild build \
+            -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
+            -scheme ${{ env.SCHEME_NAME }} \
+            -destination 'generic/platform=iOS' \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+
+      # Шаг 7: Анализ кода (опционально, но рекомендуется)
+      - name: Run SwiftLint (if available)
+        run: |
+          if which swiftlint > /dev/null; then
+            swiftlint
+          else
+            echo "SwiftLint not installed, skipping linting"
+          fi
+        continue-on-error: true
+
+      # Шаг 8: Загрузка отчета о покрытии кода (опционально)
+      - name: Upload Code Coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+        continue-on-error: true
+
+      # Шаг 9: Уведомление о результате (опционально)
+      - name: Notify Build Status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ CI/CD Pipeline completed successfully!"
+          else
+            echo "❌ CI/CD Pipeline failed. Check logs for details."
+          fi
