@@ -3,8 +3,8 @@ name: Swift Test Coverage CI
 on:
   push:
     branches:
-      - main
-      - develop
+      - production
+      - development
 
 jobs:
   run-tests-and-coverage:
