@@ -31,26 +31,28 @@ jobs:
 
       - name: Run Unit & UI Tests
         run: |
-          # 1. Run Unit Tests first (with 'clean' to start fresh)
+          # 1. Run Unit Tests and output to TestResultsUnit.xcresult
           xcodebuild test \
             -project lab9/lab9.xcodeproj \
             -scheme lab9 \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -only-testing:lab9Tests \
             -enableCodeCoverage YES \
-            -resultBundlePath TestResults.xcresult \
+            -resultBundlePath TestResultsUnit.xcresult \
             clean test
             
-          # 2. Run UI Tests sequentially and append to the same result bundle
-          # Notice there is NO 'clean' here so we don't erase the unit test coverage
+          # 2. Run UI Tests and output to TestResultsUI.xcresult
           xcodebuild test \
             -project lab9/lab9.xcodeproj \
             -scheme lab9 \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -only-testing:lab9UITests \
             -enableCodeCoverage YES \
-            -resultBundlePath TestResults.xcresult \
+            -resultBundlePath TestResultsUI.xcresult \
             test
+
+          # 3. Merge the result bundles so the coverage step can read both
+          xcrun xcresulttool merge TestResultsUnit.xcresult TestResultsUI.xcresult --output-path TestResults.xcresult
 
       - name: Extract Dynamic Coverage Report
         id: parse_coverage
