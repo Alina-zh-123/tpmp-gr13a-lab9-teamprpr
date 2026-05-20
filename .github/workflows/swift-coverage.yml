@@ -31,15 +31,26 @@ jobs:
 
       - name: Run Unit & UI Tests
         run: |
+          # 1. Run Unit Tests first (with 'clean' to start fresh)
           xcodebuild test \
             -project lab9/lab9.xcodeproj \
             -scheme lab9 \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:lab9Tests \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
-            -disable-concurrent-testing \
-            -parallel-testing-worker-count 1 \
             clean test
+            
+          # 2. Run UI Tests sequentially and append to the same result bundle
+          # Notice there is NO 'clean' here so we don't erase the unit test coverage
+          xcodebuild test \
+            -project lab9/lab9.xcodeproj \
+            -scheme lab9 \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:lab9UITests \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults.xcresult \
+            test
 
       - name: Extract Dynamic Coverage Report
         id: parse_coverage
