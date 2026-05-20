@@ -107,8 +107,7 @@ struct CurrencyRate: Identifiable {
     let sell: String
     
     
-    static func getLocalizedRates() -> [CurrencyRate] {
-        let lang = Locale.current.languageCode ?? "ru"
+    static func getLocalizedRates(lang: String = Locale.current.languageCode ?? "ru") -> [CurrencyRate] {
         
         switch lang {
         case "en":
