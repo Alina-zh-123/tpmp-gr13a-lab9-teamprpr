@@ -40,7 +40,7 @@ jobs:
             -enableCodeCoverage YES \
             -parallel-testing-enabled NO \
             -disable-concurrent-testing \
-            -resultBundlePath TestResultsUnit.xcresult \
+            -resultBundlePath TestResults.xcresult \
             clean test
             
          # 2. Run UI Tests sequentially and output to TestResultsUI.xcresult
@@ -56,7 +56,7 @@ jobs:
             #test
 
           # 3. Merge the result bundles so the coverage step can read both
-          #xcrun xcresulttool merge TestResultsUnit.xcresult TestResultsUI.xcresult --output-path TestResults.xcresult
+          # xcrun xcresulttool TestResultsUnit.xcresult --output-path TestResults.xcresult
       - name: Extract Dynamic Coverage Report
         id: parse_coverage
         run: |
