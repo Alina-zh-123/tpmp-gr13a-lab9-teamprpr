@@ -37,6 +37,8 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
+            -disable-concurrent-testing \
+            -parallel-testing-worker-count 1 \
             clean test
 
       - name: Extract Dynamic Coverage Report
