@@ -43,14 +43,7 @@ final class NavigationUITests: XCTestCase {
         let accountTypeLabel = app.staticTexts["Savings"]
         XCTAssertTrue(accountTypeLabel.exists)
         
-        // Locate and tap the back button (chevron.left)
-        let backButton = app.buttons.images["chevron.left"]
-        if backButton.exists {
-            backButton.tap()
-        } else {
-            // Alternative lookup if not grouped as button image
-            app.images["chevron.left"].tap()
-        }
+       app.navigationBars.buttons.element(boundBy: 0).tap()
         
         // Verify we are back on Main Menu
         XCTAssertTrue(app.staticTexts["Welcome!"].waitForExistence(timeout: 5))
@@ -65,13 +58,7 @@ final class NavigationUITests: XCTestCase {
         let nearestBranchLabel = app.staticTexts["Nearest branch"]
         XCTAssertTrue(nearestBranchLabel.waitForExistence(timeout: 5))
         
-        // Back button on Map is inside a circular blue overlay
-        let backButton = app.buttons.images["chevron.left"]
-        if backButton.exists {
-            backButton.tap()
-        } else {
-            app.images["chevron.left"].tap()
-        }
+       app.navigationBars.buttons.element(boundBy: 0).tap()
         
         // Verify we are back on Main Menu
         XCTAssertTrue(app.staticTexts["Welcome!"].waitForExistence(timeout: 5))
@@ -92,13 +79,7 @@ final class NavigationUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["USD"].exists)
         XCTAssertTrue(app.staticTexts["US Dollar"].exists)
         
-        // Tap back button
-        let backButton = app.buttons.images["chevron.left"]
-        if backButton.exists {
-            backButton.tap()
-        } else {
-            app.images["chevron.left"].tap()
-        }
+        app.navigationBars.buttons.element(boundBy: 0).tap()
         
         // Verify we are back on Main Menu
         XCTAssertTrue(app.staticTexts["Welcome!"].waitForExistence(timeout: 5))
