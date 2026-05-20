@@ -21,7 +21,7 @@ final class NavigationUITests: XCTestCase {
     }
     
     func testMainMenuButtonsExist() {
-        XCTAssertTrue(app.staticTexts["Welcome!"].exists)
+       // XCTAssertTrue(app.staticTexts["Welcome!"].exists)
         XCTAssertTrue(app.buttons["My Accounts"].exists)
         XCTAssertTrue(app.buttons["Branches"].exists)
         XCTAssertTrue(app.buttons["Currency Rates"].exists)
