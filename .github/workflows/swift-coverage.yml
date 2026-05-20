@@ -86,13 +86,3 @@ jobs:
             else print "red";
           }')
           echo "COVERAGE_COLOR=$COVERAGE_COLOR" >> $GITHUB_ENV
-
-      - name: Create or Update Dynamic Coverage Badge
-        uses: Schneegans/dynamic-badges-action@v1.6.0
-        with:
-          auth: ${{ secrets.GIST_SECRET }}
-          gistID: ${{ secrets.GIST_ID }}
-          filename: coverage.json
-          label: coverage
-          message: ${{ env.COVERAGE_VAL }}%
-          color: ${{ env.COVERAGE_COLOR }}
