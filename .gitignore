@@ -1,0 +1,88 @@
+# Xcode
+#
+# Reference: https://github.com/github/gitignore/blob/main/Swift.gitignore
+
+# Build artifacts
+build/
+DerivedData/
+
+# Source3
+*.moved-aside
+
+# Xcode user settings and shared data
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xcworkspace/contents.xcworkspacedata
+*.xcworkspace/xcshareddata/
+!*.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcworkspace/DerivedData/
+.orange/
+
+# Xcode Server / Xcode Cloud / Test Results
+*.xcresult
+*.xcresult.zip
+coverage.json
+coverage_report.json
+TestResults.xcresult/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+!*.swiftpm/configuration/
+
+# Carthage
+Carthage/Build/
+
+# CocoaPods
+#
+# We do not ignore Podfile.lock or Pods/ if team wants to commit them, 
+# but ignoring Pods/ is standard practice to download via `pod install` on CI.
+# Pods/
+# HeaderSourceExports/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Coverage / Reports
+*.gcov
+*.gcno
+*.gcda
+
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon files
+Icon\r
+
+# Thumbnails
+._*
+
+# Files that might contain sensitive info
+.Spotlight-V100
+.Trashes
+
+# Windows System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# User temporary files
+*.tmp
+*.bak
+*.swp
+*~

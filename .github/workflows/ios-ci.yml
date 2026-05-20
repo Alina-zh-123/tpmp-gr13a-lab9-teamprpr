@@ -11,13 +11,14 @@ on:
 env:
   PROJECT_NAME: lab9
   SCHEME_NAME: lab9
-  SIMULATOR_NAME: iPhone 15
+  SIMULATOR_NAME: iPhone 16
 
 jobs:
   # Основная работа CI/CD
   build-and-test:
     # Виртуальная машина: macOS с последней версией
     runs-on: macos-latest
+    timeout-minutes: 20
     
     steps:
       # Шаг 1: Checkout репозитория
@@ -25,6 +26,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # Шаг 1.5: Подготовка окружения для подписи и тестирования (предотвращает зависания codesign)
+      - name: Prepare Signing and Testing Environment
+        run: |
+          # Разблокировка связки ключей macOS для беспрепятственного codesign
+          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db || true
+          security set-keychain-settings -t 3600 -u ~/Library/Keychains/login.keychain-db || true
+          # Удаление расширенных файловых атрибутов для избежания ошибок ресурсов
+          xattr -cr .
 
       # Шаг 2: Установка зависимостей (если используется CocoaPods)
       - name: Setup CocoaPods Dependencies
@@ -39,17 +49,29 @@ jobs:
           xcodebuild -version
           xcrun simctl list devices
 
+      # Шаг 3.2: Динамический выбор симулятора
+      - name: Select iOS Simulator
+        run: |
+          SIMULATOR=$(xcrun simctl list devices | grep -E "iPhone" | grep -v "unavailable" | head -n 1 | sed -E 's/^[[:space:]]*//; s/[[:space:]]*\(.*//')
+          echo "Selected simulator: $SIMULATOR"
+          echo "SIMULATOR_NAME=$SIMULATOR" >> $GITHUB_ENV
+
+      # Шаг 3.5: Предварительный запуск симулятора (избегает зависания UI-тестов)
+      - name: Boot Simulator
+        run: |
+          xcrun simctl boot "${{ env.SIMULATOR_NAME }}" || true
+          xcrun simctl bootstatus "${{ env.SIMULATOR_NAME }}" -boot || true
+
       # Шаг 4: Запуск Unit тестов
       - name: Run Unit Tests
         run: |
           xcodebuild test \
             -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
             -scheme ${{ env.SCHEME_NAME }} \
-            -destination 'generic/platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
+            -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
-            -enableCodeCoverage YES \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
+            -only-testing:lab9Tests \
+            -enableCodeCoverage YES
         continue-on-error: false
 
       # Шаг 5: Запуск UI тестов
@@ -58,11 +80,9 @@ jobs:
           xcodebuild test \
             -project ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.xcodeproj \
             -scheme ${{ env.SCHEME_NAME }} \
-            -destination 'generic/platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
+            -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }}' \
             -configuration Debug \
-            -only-testing: lab9UITests \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
+            -only-testing:lab9UITests
         continue-on-error: true
 
       # Шаг 6: Финальная сборка (Build) — выполняется только при успешных тестах

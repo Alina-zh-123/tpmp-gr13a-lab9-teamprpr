@@ -1,0 +1,88 @@
+name: Swift Test Coverage CI
+
+on:
+  push:
+    branches:
+      - production
+      - development
+
+jobs:
+  run-tests-and-coverage:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare Signing and Testing Environment
+        run: |
+          # Разблокировка связки ключей macOS для беспрепятственного codesign
+          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db || true
+          security set-keychain-settings -t 3600 -u ~/Library/Keychains/login.keychain-db || true
+          # Удаление расширенных файловых атрибутов для избежания ошибок ресурсов
+          xattr -cr .
+
+      - name: Boot Simulator
+        run: |
+          xcrun simctl boot "iPhone 16" || true
+          xcrun simctl bootstatus "iPhone 16" -boot || true
+
+      - name: Run Unit & UI Tests
+        run: |
+          # 1. Run Unit Tests sequentially and output to TestResultsUnit.xcresult
+          xcodebuild test \
+            -project lab9/lab9.xcodeproj \
+            -scheme lab9 \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:lab9Tests \
+            -enableCodeCoverage YES \
+            -parallel-testing-enabled NO \
+            -disable-concurrent-testing \
+            -resultBundlePath TestResults.xcresult \
+            clean test
+            
+         # 2. Run UI Tests sequentially and output to TestResultsUI.xcresult
+         # xcodebuild test \
+            #-project lab9/lab9.xcodeproj \
+            #-scheme lab9 \
+            #-destination 'platform=iOS Simulator,name=iPhone 16' \
+            #-only-testing:lab9UITests \
+            #-enableCodeCoverage YES \
+            #-parallel-testing-enabled NO \
+            #-disable-concurrent-testing \
+            #-resultBundlePath TestResultsUI.xcresult \
+            #test
+
+          # 3. Merge the result bundles so the coverage step can read both
+          # xcrun xcresulttool TestResultsUnit.xcresult --output-path TestResults.xcresult
+      - name: Extract Dynamic Coverage Report
+        id: parse_coverage
+        run: |
+          # Generate JSON report from .xcresult using xccov
+          xcrun xccov view --report --json TestResults.xcresult > coverage_report.json
+          
+          # Extract top-level line coverage float (e.g. 0.9412)
+          COVERAGE_FLOAT=$(jq -r '.lineCoverage' coverage_report.json)
+          
+          # Convert to percentage
+          COVERAGE_PERCENT=$(awk -v cov="$COVERAGE_FLOAT" 'BEGIN {print cov * 100}')
+          COVERAGE_ROUNDED=$(awk -v cov="$COVERAGE_PERCENT" 'BEGIN {printf "%.1f", cov}')
+          
+          # Print dynamic percentage to console
+          echo "==========================================="
+          echo "DYNAMIC TOTAL CODE COVERAGE: $COVERAGE_ROUNDED%"
+          echo "==========================================="
+          
+          # Set variables for GitHub Actions environment
+          echo "COVERAGE_VAL=$COVERAGE_ROUNDED" >> $GITHUB_ENV
+          
+          # Dynamically determine shields.io badge color
+          COVERAGE_COLOR=$(awk -v cov="$COVERAGE_PERCENT" 'BEGIN {
+            if (cov >= 90.0) print "brightgreen";
+            else if (cov >= 80.0) print "green";
+            else if (cov >= 60.0) print "yellow";
+            else print "red";
+          }')
+          echo "COVERAGE_COLOR=$COVERAGE_COLOR" >> $GITHUB_ENV
