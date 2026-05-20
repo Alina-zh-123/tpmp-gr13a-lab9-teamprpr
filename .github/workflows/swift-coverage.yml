@@ -38,6 +38,7 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -only-testing:lab9Tests \
             -enableCodeCoverage YES \
+            -parallel-testing-enabled NO \
             -disable-concurrent-testing \
             -resultBundlePath TestResultsUnit.xcresult \
             clean test
@@ -49,13 +50,13 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -only-testing:lab9UITests \
             -enableCodeCoverage YES \
+            -parallel-testing-enabled NO \
             -disable-concurrent-testing \
             -resultBundlePath TestResultsUI.xcresult \
             test
 
           # 3. Merge the result bundles so the coverage step can read both
           xcrun xcresulttool merge TestResultsUnit.xcresult TestResultsUI.xcresult --output-path TestResults.xcresult
-
       - name: Extract Dynamic Coverage Report
         id: parse_coverage
         run: |
